@@ -12,7 +12,7 @@
     return h;
   }
   async function api(path, opts){
-    const res = await fetch('/api'+path, { headers: getHeaders(), ...(opts.body && typeof opts.body === 'object' ? { body: JSON.stringify(opts.body) } : {}), ...(opts.method ? { method: opts.method } : {}) });
+    const res = await fetch('/api'+path, { headers: getHeaders(), ...((opts && opts.body && typeof opts.body === 'object') ? { body: JSON.stringify(opts.body) } : {}), ...(opts && opts.method ? { method: opts.method } : {}) });
     const text = await res.text();
     let data;
     try { data = JSON.parse(text); } catch { data = { raw: text }; }
@@ -139,8 +139,8 @@
 
   function escapeHtml(text){
     if (!text) return '';
-    const map = {'&':'&','<':'<','>':'>','"':'"',"'":"'"};
-    return String(text).replace(/[&<>"']/g, function(m){ return map[m]; });
+    const map = {'&':'&','<':'<','>':'>','"':'"',"'":'''};
+    return String(text).replace(/[&<>"']/g, function(m){ return map[m] || m; });
   }
 
   window.buyListing = async function(id){
